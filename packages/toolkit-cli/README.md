@@ -7,8 +7,8 @@
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_ACCESS_TOKEN
 ```
 
-- 2.install toolkit-cli
+- 2.install gh-toolkit-cli
 
 ```bash
-npm install @chengzao/toolkit-cli@1.0.0
+npm install @chengzao/gh-toolkit-cli
 ```
