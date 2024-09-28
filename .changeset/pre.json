@@ -1,0 +1,9 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@chengzao/gh-toolkit-cli": "0.0.1",
+    "@chengzao/gh-toolkit-utils": "0.0.1"
+  },
+  "changesets": []
+}
