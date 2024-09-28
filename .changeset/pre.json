@@ -6,6 +6,7 @@
     "@chengzao/gh-toolkit-utils": "0.0.0"
   },
   "changesets": [
+    "chilly-rivers-flow",
     "yellow-tips-drive"
   ]
 }

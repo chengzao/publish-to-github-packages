@@ -5,7 +5,7 @@ const program = new Command();
 program
   .name('string-util')
   .description('CLI to some JavaScript string utilities')
-  .version('0.0.1');
+  .version('0.0.2');
 
 program.command('split')
   .description('Split a string into substrings and display as an array')
