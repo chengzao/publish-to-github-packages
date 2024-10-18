@@ -118,8 +118,8 @@ async function tagPackage(selectedPackage) {
         console.log('git tag output successfully.');
 
         // push tag
-        const { stdout: tagOutput } = await execa({ stdio: 'pipe' })`git push origin ${name}@${version}`
-        console.log('git push output:', tagOutput);
+        await execa({ stdio: 'pipe' })`git push origin ${name}@${version}`
+        console.log('git tag push origin successfully.');
     } catch (e) {
         if (e instanceof ExecaError) {
             console.log('Error tagging package:', e.shortMessage);
