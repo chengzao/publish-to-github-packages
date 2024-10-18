@@ -107,15 +107,14 @@ async function tagPackage(selectedPackage) {
 
         if (stdout) {
             await execa`git add -A`
-            await execa`git commit -m "Release version ${version}"`
+            await execa`git commit -m ${"Release version"+version}`
         } else {
             console.log('No changes to commit.');
         }
 
         // create tag
-        await execa`git tag`
-        // await execa`git tag -a ${name}@${version} -m "Release version ${version}"`;
-        // await execa`git push origin ${name}@${version}`
+        await execa`git tag ${name}@${version} -m ${"Release version"+version}`;
+        await execa`git push origin ${name}@${version}`
     } catch (e) {
         // if it's a patch release, there may be no local deps to sync
         console.log('Error tagging package:', e);
