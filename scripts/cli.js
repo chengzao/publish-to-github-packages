@@ -98,28 +98,30 @@ async function publishPackage(selectedPackage) {
 
 // 打包tag
 async function tagPackage(selectedPackage) {
-    
+
     try {
         const { name, version } = selectedPackage
         console.log(`tagging package: ${name}@${version}`);
 
         // git add
-        const { stdout } = await execa({stdio: 'pipe'})`git diff`;
+        const { stdout: diffOutput } = await execa({ stdio: 'pipe' })`git diff`;
 
-        if (stdout) {
+        if (diffOutput) {
             await execa`git add -A`
-            await execa`git commit -m ${"Release version"+version}`
+            await execa`git commit -m ${"Release version" + version}`
         } else {
             console.log('No changes to commit.');
         }
 
         // create tag
-        await execa`git tag ${name}@${version} -m ${"Release version"+version}`;
+        await execa`git tag ${name}@${version} -m ${"Release version" + version}`;
+        console.log('git tag output successfully.');
 
         // push tag
-        await execa`git push origin ${name}@${version}`
+        const { stdout: tagOutput } = await execa`git push origin ${name}@${version}`
+        console.log('git push output:', tagOutput);
     } catch (e) {
-        if (error instanceof ExecaError) {
+        if (e instanceof ExecaError) {
             console.log('Error tagging package:', e.shortMessage);
             process.exit(1);
         } else {
