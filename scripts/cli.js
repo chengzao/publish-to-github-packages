@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 // 获取当前文件的目录
 const __dirname = path.dirname(__filename);
 
-const packagesDir = path.join(__dirname, 'packages');
+const packagesDir = path.join(__dirname, '../packages');
 
 // 初始化 readline 接口
 const rl = readline.createInterface({
@@ -89,6 +89,7 @@ async function publishPackage(selectedPackage) {
     } catch (error) {
         if (error instanceof ExecaError) {
             console.log('ExecaError:', error.shortMessage);
+            process.exit(1);
         } else {
             throw error;
         }
@@ -114,10 +115,16 @@ async function tagPackage(selectedPackage) {
 
         // create tag
         await execa`git tag ${name}@${version} -m ${"Release version"+version}`;
+
+        // push tag
         await execa`git push origin ${name}@${version}`
     } catch (e) {
-        // if it's a patch release, there may be no local deps to sync
-        console.log('Error tagging package:', e);
+        if (error instanceof ExecaError) {
+            console.log('Error tagging package:', e.shortMessage);
+            process.exit(1);
+        } else {
+            throw error;
+        }
     }
 }
 
@@ -148,6 +155,7 @@ async function tagPackage(selectedPackage) {
         process.exit(0);
     } catch (error) {
         console.error(error);
+        process.exit(1);
     }
 })();
 

@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r --filter='./packages/*' run build",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "cli": "node scripts/cli.js"
   },
   "repository": {
     "url": "https://github.com/chengzao/publish-to-github-packages.git"
