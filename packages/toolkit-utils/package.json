@@ -1,6 +1,6 @@
 {
   "name": "@chengzao/gh-toolkit-utils",
-  "version": "0.0.1-beta.3",
+  "version": "0.0.1-beta.1",
   "description": "this is a demo for gh-toolkit-utils",
   "main": "index.js",
   "files": [

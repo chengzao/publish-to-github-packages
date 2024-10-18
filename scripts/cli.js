@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import fs from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
 import inquirer from 'inquirer';
-import readline from 'readline';
+import readline from 'node:readline';
 import { fileURLToPath } from 'node:url'
 import { execa, ExecaError } from 'execa';
 
