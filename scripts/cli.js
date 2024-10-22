@@ -89,7 +89,7 @@ async function publishPackage(selectedPackage) {
         console.log(pc.greenBright(`Package ${selectedPackage.name} published successfully.\n`));
     } catch (error) {
         if (error instanceof ExecaError) {
-            console.log('ExecaError:', error.shortMessage);
+            console.log(pc.redBright('Error publishing package:'), error.shortMessage);
             process.exit(1);
         } else {
             throw error;
@@ -102,7 +102,7 @@ async function tagPackage(selectedPackage) {
 
     try {
         const { name, version } = selectedPackage
-        console.log(`tagging package: ${name}@${version}`);
+        console.log(pc.blue(`tagging package: ${name}@${version}`));
 
         // git add
         const { stdout: diffOutput } = await execa({ stdio: 'pipe' })`git diff`;
@@ -116,14 +116,14 @@ async function tagPackage(selectedPackage) {
 
         // create tag
         await execa`git tag ${name}@${version} -m ${"Release version" + version}`;
-        console.log('git tag output successfully.');
+        console.log(pc.blue('git tag output successfully.'));
 
         // push tag
         await execa({ stdio: 'pipe' })`git push origin ${name}@${version}`
-        console.log('git tag push origin successfully.');
+        console.log(pc.blue('git tag push origin successfully.'));
     } catch (e) {
         if (e instanceof ExecaError) {
-            console.log('Error tagging package:', e.shortMessage);
+            console.log(pc.redBright('Error tagging package:'), e.shortMessage);
             process.exit(1);
         } else {
             throw error;
@@ -136,7 +136,7 @@ async function tagPackage(selectedPackage) {
     try {
         const packages = await getPackages();
         if (packages.length === 0) {
-            console.log(pc.red('No packages found in the packages directory.'));
+            console.log(pc.redBright('No packages found in the packages directory.'));
             return;
         }
 
@@ -164,7 +164,7 @@ async function tagPackage(selectedPackage) {
 
 // 监听 SIGINT
 rl.on('SIGINT', () => {
-    console.log(pc.red('\nSIGINT received: You are exit the program on Ctrl+C\n'));
+    console.log(pc.redBright('\nSIGINT received: You are exit the program on Ctrl+C\n'));
     rl.close();
     process.exit(0);
 });
