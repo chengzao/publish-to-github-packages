@@ -84,7 +84,7 @@ async function publishPackage(selectedPackage) {
 
         const { stdout } = await execa`npm run test --prefix ${selectedPackage.dir}`;
 
-        console.log('execa stdout:', stdout);
+        console.log(pc.greenBright('execa stdout:'), stdout);
 
         console.log(pc.greenBright(`Package ${selectedPackage.name} published successfully.\n`));
     } catch (error) {
