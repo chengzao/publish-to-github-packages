@@ -80,7 +80,7 @@ async function inputVersion(selectedPackage) {
 async function publishPackage(selectedPackage) {
 
     try {
-        console.log(pc.greenBright(`npm publish with < ${selectedPackage.dir} > \n`))
+        console.log(pc.greenBright(`npm publishing on < ${selectedPackage.dir} > \n`))
 
         const { stdout } = await execa`npm run test --prefix ${selectedPackage.dir}`;
 
@@ -111,19 +111,19 @@ async function tagPackage(selectedPackage) {
             await execa`git add -A`
             await execa`git commit -m ${"Release version" + version}`
         } else {
-            console.log('No changes to commit.');
+            console.log('No changes to commit.\n');
         }
 
         // create tag
         await execa`git tag ${name}@${version} -m ${"Release version" + version}`;
-        console.log(pc.blue('git tag output successfully.'));
+        console.log(pc.blue('git tag output successfully.\n'));
 
         // push tag
         await execa({ stdio: 'pipe' })`git push origin ${name}@${version}`
-        console.log(pc.blue('git tag push origin successfully.'));
+        console.log(pc.blue('git tag push origin successfully.\n'));
     } catch (e) {
         if (e instanceof ExecaError) {
-            console.log(pc.redBright('Error tagging package:'), e.shortMessage);
+            console.log(pc.redBright('Error tagging package:'), e);
             process.exit(1);
         } else {
             throw error;
