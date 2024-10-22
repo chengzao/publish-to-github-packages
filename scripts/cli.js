@@ -6,6 +6,7 @@ import inquirer from 'inquirer';
 import readline from 'node:readline';
 import { fileURLToPath } from 'node:url'
 import { execa, ExecaError } from 'execa';
+import pc from "picocolors"
 
 // 获取当前文件的路径
 const __filename = fileURLToPath(import.meta.url);
@@ -79,13 +80,13 @@ async function inputVersion(selectedPackage) {
 async function publishPackage(selectedPackage) {
 
     try {
-        console.log(`npm publish with < ${selectedPackage.dir} > \n`)
+        console.log(pc.greenBright(`npm publish with < ${selectedPackage.dir} > \n`))
 
         const { stdout } = await execa`npm run test --prefix ${selectedPackage.dir}`;
 
         console.log('execa stdout:', stdout);
 
-        console.log(`Package ${selectedPackage.name} published successfully.\n`);
+        console.log(pc.greenBright(`Package ${selectedPackage.name} published successfully.\n`));
     } catch (error) {
         if (error instanceof ExecaError) {
             console.log('ExecaError:', error.shortMessage);
@@ -135,7 +136,7 @@ async function tagPackage(selectedPackage) {
     try {
         const packages = await getPackages();
         if (packages.length === 0) {
-            console.log('No packages found in the packages directory.');
+            console.log(pc.red('No packages found in the packages directory.'));
             return;
         }
 
@@ -163,7 +164,7 @@ async function tagPackage(selectedPackage) {
 
 // 监听 SIGINT
 rl.on('SIGINT', () => {
-    console.log('\nYou are exit the program on Ctrl+C');
+    console.log(pc.red('\nSIGINT received: You are exit the program on Ctrl+C\n'));
     rl.close();
     process.exit(0);
 });
