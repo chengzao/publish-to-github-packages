@@ -89,7 +89,7 @@ async function publishPackage(selectedPackage) {
         console.log(pc.greenBright(`Package ${selectedPackage.name} published successfully.\n`));
     } catch (error) {
         if (error instanceof ExecaError) {
-            console.log(pc.redBright('Error publishing package:'), error.shortMessage);
+            console.log(pc.redBright('Error publishing package:'), error.stderr);
             process.exit(1);
         } else {
             throw error;
@@ -123,7 +123,7 @@ async function tagPackage(selectedPackage) {
         console.log(pc.blue('git tag push origin successfully.\n'));
     } catch (e) {
         if (e instanceof ExecaError) {
-            console.log(pc.redBright('Error tagging package:'), e);
+            console.log(pc.redBright('Error tagging package:'), e.stderr);
             process.exit(1);
         } else {
             throw error;
