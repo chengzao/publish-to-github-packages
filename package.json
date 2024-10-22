@@ -7,7 +7,8 @@
   "scripts": {
     "build": "pnpm -r --filter='./packages/*' run build",
     "release": "changeset publish",
-    "cli": "node scripts/cli.js"
+    "cli": "node scripts/cli.js",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "repository": {
     "url": "https://github.com/chengzao/publish-to-github-packages.git"
@@ -21,6 +22,7 @@
     "@changesets/cli": "^2.27.8"
   },
   "dependencies": {
+    "conventional-changelog-cli": "^5.0.0",
     "execa": "^9.4.1",
     "fs-extra": "^11.2.0",
     "inquirer": "^12.0.0",
