@@ -8,7 +8,8 @@
     "build": "pnpm -r --filter='./packages/*' run build",
     "release": "changeset publish",
     "cli": "node scripts/cli.js",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "postpublish": "node scripts/create-tag.js"
   },
   "repository": {
     "url": "https://github.com/chengzao/publish-to-github-packages.git"
