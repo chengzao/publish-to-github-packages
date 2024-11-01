@@ -1,16 +1,26 @@
-import { execa, ExecaError } from 'execa';
+import { execa } from 'execa';
 import fs from 'fs-extra';
 import path from 'node:path';
 import process from 'node:process';
-
-const packageJsonPath = path.join(process.cwd(), './package.json');
+import pc from "picocolors"
 
 try {
+  const packageJsonPath = path.join(process.cwd(), './package.json');
   const packageJson = await fs.readJson(packageJsonPath);
   const version = packageJson.version;
-  // await execa`git tag v${version}`;
-  // await execa`git push origin v${version}`;
-  console.log(`Tag v${version} was created and pushed successfully.`);
+
+  // check git tag exists
+  const { stdout } = await execa`git tag -l v${version}`;
+  if (stdout) {
+    throw new Error(pc.bgRedBright(`Tag v${version} already exists.`));
+  }
+  // create git tag
+  await execa`git tag v${version}`;
+  // push git tag
+  await execa`git push origin v${version}`;
+  console.log(pc.bgGreenBright(`Tag v${version} was created and pushed successfully.`));
 } catch (error) {
-  console.error('Error during tag creation:', error);
+  console.error(pc.bgRedBright('Error during tag creation:'), error);
+  console.log(pc.redBright('Please check the logs for more details.'));
+  process.exit(1);
 }
