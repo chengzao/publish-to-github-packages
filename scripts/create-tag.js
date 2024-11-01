@@ -15,6 +15,9 @@ try {
 
   const tagName = `rc-${version}`;
 
+  // fetch all tags
+  await execa`git fetch --tags`;
+
   // check git tag exists
   const { stdout } = await execa`git tag -l ${tagName}`;
   if (stdout) {
