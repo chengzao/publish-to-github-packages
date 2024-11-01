@@ -15,9 +15,9 @@ try {
     throw new Error(pc.bgRedBright(`Tag v${version} already exists.`));
   }
   // create git tag
-  await execa`git tag v${version}`;
+  await execa`git tag rc-${version}`;
   // push git tag
-  await execa`git push origin v${version}`;
+  await execa`git push origin rc-${version}`;
   console.log(pc.bgGreenBright(`Tag v${version} was created and pushed successfully.`));
 } catch (error) {
   console.error(pc.bgRedBright('Error during tag creation:'), error);
