@@ -1,6 +1,5 @@
 {
   "name": "@chengzao/gh-toolkit-cli",
-  "version": "0.0.1-beta.1",
   "description": "this is a demo for gh-toolkit-cli",
   "main": "index.js",
   "files": [

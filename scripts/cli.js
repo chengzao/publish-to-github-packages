@@ -147,6 +147,27 @@ async function checkVersionExists(packageVersion) {
     })
 }
 
+async function inputVersionCb(selectedPackage, depth = 0) {
+    // 填写版本号
+    const newVersion = await inputVersion(selectedPackage);
+
+    // 检查新版本是否存在
+    const spinner = ora('Checking package version is exists?').start();
+    const pkgVerFullName = selectedPackage.name+"@"+newVersion
+    const isExistVersion = await checkVersionExists(pkgVerFullName)
+    spinner.succeed();
+    if (isExistVersion) {
+        if(depth < 3) {
+            inputVersionCb(selectedPackage, depth + 1)
+        } else {
+            throw new Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
+        }
+    }else {
+        return newVersion
+    }
+
+}
+
 // 主函数
 (async () => {
     try {
@@ -159,17 +180,19 @@ async function checkVersionExists(packageVersion) {
         // 选择需要升级的 package
         const selectedPackage = await selectPackage(packages);
 
-        // 填写版本号
-        const newVersion = await inputVersion(selectedPackage);
+        // // 填写版本号
+        // const newVersion = await inputVersion(selectedPackage);
 
-        // 检查新版本是否存在
-        const spinner = ora('Checking package version is exists?').start();
-        const pkgVerFullName = selectedPackage.name+"@"+newVersion
-        const isExistVersion = await checkVersionExists(pkgVerFullName)
-        spinner.succeed();
-        if (isExistVersion) {
-            throw new Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
-        }
+        // // 检查新版本是否存在
+        // const spinner = ora('Checking package version is exists?').start();
+        // const pkgVerFullName = selectedPackage.name+"@"+newVersion
+        // const isExistVersion = await checkVersionExists(pkgVerFullName)
+        // spinner.succeed();
+        // if (isExistVersion) {
+        //     throw new Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
+        // }
+
+        const newVersion = await inputVersionCb(selectedPackage)
 
         // 更新 package.json 中的版本号
         const packageJson = await fs.readJson(selectedPackage.path);
