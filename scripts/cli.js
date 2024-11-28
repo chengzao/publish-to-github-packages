@@ -7,6 +7,7 @@ import readline from 'node:readline';
 import { fileURLToPath } from 'node:url'
 import { execa, ExecaError } from 'execa';
 import pc from "picocolors"
+import ora from 'ora';
 
 // 获取当前文件的路径
 const __filename = fileURLToPath(import.meta.url);
@@ -131,6 +132,21 @@ async function tagPackage(selectedPackage) {
     }
 }
 
+// 检测版本是否存在
+async function checkVersionExists(packageVersion) {
+    return execa`npm view ${packageVersion} version`.then(({stdout}) => {
+        return !!stdout
+    }).catch((error) => {
+        const message = error.stderr;
+        if (message.includes('npm ERR! 404')) {
+            return false
+        }else {
+            console.log(pc.redBright(`\nError checking version: ${error.stderr}`));
+            throw error
+        }
+    })
+}
+
 // 主函数
 (async () => {
     try {
@@ -140,8 +156,20 @@ async function tagPackage(selectedPackage) {
             return;
         }
 
+        // 选择需要升级的 package
         const selectedPackage = await selectPackage(packages);
+
+        // 填写版本号
         const newVersion = await inputVersion(selectedPackage);
+
+        // 检查新版本是否存在
+        const spinner = ora('Checking package version is exists?').start();
+        const pkgVerFullName = selectedPackage.name+"@"+newVersion
+        const isExistVersion = await checkVersionExists(pkgVerFullName)
+        spinner.succeed();
+        if (isExistVersion) {
+            throw new Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
+        }
 
         // 更新 package.json 中的版本号
         const packageJson = await fs.readJson(selectedPackage.path);
