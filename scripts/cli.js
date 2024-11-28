@@ -13,6 +13,8 @@ import ora from 'ora';
 const __filename = fileURLToPath(import.meta.url);
 // 获取当前文件的目录
 const __dirname = path.dirname(__filename);
+// 最大尝试次数
+const MAX_TRIES = 3
 
 const packagesDir = path.join(__dirname, '../packages');
 
@@ -147,7 +149,7 @@ async function checkVersionExists(packageVersion) {
     })
 }
 
-async function inputVersionCb(selectedPackage, depth = 0) {
+async function generateVersion(selectedPackage, depth = 0) {
     // 填写版本号
     const newVersion = await inputVersion(selectedPackage);
 
@@ -156,16 +158,20 @@ async function inputVersionCb(selectedPackage, depth = 0) {
     const pkgVerFullName = selectedPackage.name+"@"+newVersion
     const isExistVersion = await checkVersionExists(pkgVerFullName)
     spinner.succeed();
+
+    // 如果版本存在
     if (isExistVersion) {
-        if(depth < 3) {
-            inputVersionCb(selectedPackage, depth + 1)
+        // 递归检查
+        if(depth < MAX_TRIES) {
+            console.log(pc.redBright(`Package ${pkgVerFullName} already exists, Try again.`));
+            return generateVersion(selectedPackage, depth + 1)
         } else {
-            throw new Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
+            console.log(pc.redBright(`You try to run again over ${MAX_TRIES} times.`));
+            throw Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
         }
     }else {
         return newVersion
     }
-
 }
 
 // 主函数
@@ -180,19 +186,10 @@ async function inputVersionCb(selectedPackage, depth = 0) {
         // 选择需要升级的 package
         const selectedPackage = await selectPackage(packages);
 
-        // // 填写版本号
-        // const newVersion = await inputVersion(selectedPackage);
+        // 生成新的版本号
+        const newVersion = await generateVersion(selectedPackage)
 
-        // // 检查新版本是否存在
-        // const spinner = ora('Checking package version is exists?').start();
-        // const pkgVerFullName = selectedPackage.name+"@"+newVersion
-        // const isExistVersion = await checkVersionExists(pkgVerFullName)
-        // spinner.succeed();
-        // if (isExistVersion) {
-        //     throw new Error(pc.redBright(`Package ${pkgVerFullName} already exists.`));
-        // }
-
-        const newVersion = await inputVersionCb(selectedPackage)
+        if(!newVersion) return
 
         // 更新 package.json 中的版本号
         const packageJson = await fs.readJson(selectedPackage.path);
